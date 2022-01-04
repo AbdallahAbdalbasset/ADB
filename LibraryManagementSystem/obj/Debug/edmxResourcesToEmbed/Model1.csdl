@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="LibraryManagementSystemModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="author">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="name" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="book_author" Relationship="Self.fk_bookauthor_author" FromRole="author" ToRole="book_author" />
+  </EntityType>
+  <EntityType Name="book">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="title" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Name="category" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Name="publication_date" Type="DateTime" Precision="0" />
+    <Property Name="copies_owned" Type="Int32" />
+    <NavigationProperty Name="book_author" Relationship="Self.fk_bookauthor_book" FromRole="book" ToRole="book_author" />
+    <NavigationProperty Name="borrows" Relationship="Self.fk_borrow_book" FromRole="book" ToRole="borrow" />
+  </EntityType>
+  <EntityType Name="book_author">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="book_id" Type="Int32" />
+    <Property Name="author_id" Type="Int32" />
+    <NavigationProperty Name="author" Relationship="Self.fk_bookauthor_author" FromRole="book_author" ToRole="author" />
+    <NavigationProperty Name="book" Relationship="Self.fk_bookauthor_book" FromRole="book_author" ToRole="book" />
+  </EntityType>
+  <EntityType Name="borrow">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="book_id" Type="Int32" />
+    <Property Name="member_id" Type="Int32" />
+    <Property Name="borrow_date" Type="DateTime" Precision="0" />
+    <Property Name="returned_date" Type="DateTime" Precision="0" />
+    <NavigationProperty Name="book" Relationship="Self.fk_borrow_book" FromRole="borrow" ToRole="book" />
+    <NavigationProperty Name="member" Relationship="Self.fk_borrow_member" FromRole="borrow" ToRole="member" />
+  </EntityType>
+  <EntityType Name="member">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="name" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
+    <Property Name="contact_number" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="borrows" Relationship="Self.fk_borrow_member" FromRole="member" ToRole="borrow" />
+  </EntityType>
+  <Association Name="fk_bookauthor_author">
+    <End Role="author" Type="Self.author" Multiplicity="0..1" />
+    <End Role="book_author" Type="Self.book_author" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="author">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="book_author">
+        <PropertyRef Name="author_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_bookauthor_book">
+    <End Role="book" Type="Self.book" Multiplicity="0..1" />
+    <End Role="book_author" Type="Self.book_author" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="book">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="book_author">
+        <PropertyRef Name="book_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_borrow_book">
+    <End Role="book" Type="Self.book" Multiplicity="0..1" />
+    <End Role="borrow" Type="Self.borrow" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="book">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="borrow">
+        <PropertyRef Name="book_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_borrow_member">
+    <End Role="member" Type="Self.member" Multiplicity="0..1" />
+    <End Role="borrow" Type="Self.borrow" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="member">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="borrow">
+        <PropertyRef Name="member_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="LibraryManagementSystemEntities4" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="authors" EntityType="Self.author" />
+    <EntitySet Name="books" EntityType="Self.book" />
+    <EntitySet Name="book_author" EntityType="Self.book_author" />
+    <EntitySet Name="borrows" EntityType="Self.borrow" />
+    <EntitySet Name="members" EntityType="Self.member" />
+    <AssociationSet Name="fk_bookauthor_author" Association="Self.fk_bookauthor_author">
+      <End Role="author" EntitySet="authors" />
+      <End Role="book_author" EntitySet="book_author" />
+    </AssociationSet>
+    <AssociationSet Name="fk_bookauthor_book" Association="Self.fk_bookauthor_book">
+      <End Role="book" EntitySet="books" />
+      <End Role="book_author" EntitySet="book_author" />
+    </AssociationSet>
+    <AssociationSet Name="fk_borrow_book" Association="Self.fk_borrow_book">
+      <End Role="book" EntitySet="books" />
+      <End Role="borrow" EntitySet="borrows" />
+    </AssociationSet>
+    <AssociationSet Name="fk_borrow_member" Association="Self.fk_borrow_member">
+      <End Role="member" EntitySet="members" />
+      <End Role="borrow" EntitySet="borrows" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

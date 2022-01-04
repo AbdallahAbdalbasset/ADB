@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="LibraryManagementSystemModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="author">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" />
+    <Property Name="name" Type="varchar" MaxLength="300" />
+  </EntityType>
+  <EntityType Name="book">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" />
+    <Property Name="title" Type="varchar" MaxLength="500" />
+    <Property Name="category" Type="varchar" MaxLength="500" />
+    <Property Name="publication_date" Type="date" />
+    <Property Name="copies_owned" Type="int" />
+  </EntityType>
+  <EntityType Name="book_author">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" />
+    <Property Name="book_id" Type="int" />
+    <Property Name="author_id" Type="int" />
+  </EntityType>
+  <EntityType Name="borrow">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" />
+    <Property Name="book_id" Type="int" />
+    <Property Name="member_id" Type="int" />
+    <Property Name="borrow_date" Type="date" />
+    <Property Name="returned_date" Type="date" />
+  </EntityType>
+  <EntityType Name="member">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" />
+    <Property Name="name" Type="varchar" MaxLength="300" />
+    <Property Name="contact_number" Type="varchar" MaxLength="300" />
+  </EntityType>
+  <Association Name="fk_bookauthor_author">
+    <End Role="author" Type="Self.author" Multiplicity="0..1" />
+    <End Role="book_author" Type="Self.book_author" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="author">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="book_author">
+        <PropertyRef Name="author_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_bookauthor_book">
+    <End Role="book" Type="Self.book" Multiplicity="0..1" />
+    <End Role="book_author" Type="Self.book_author" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="book">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="book_author">
+        <PropertyRef Name="book_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_borrow_book">
+    <End Role="book" Type="Self.book" Multiplicity="0..1" />
+    <End Role="borrow" Type="Self.borrow" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="book">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="borrow">
+        <PropertyRef Name="book_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_borrow_member">
+    <End Role="member" Type="Self.member" Multiplicity="0..1" />
+    <End Role="borrow" Type="Self.borrow" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="member">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="borrow">
+        <PropertyRef Name="member_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="LibraryManagementSystemModelStoreContainer">
+    <EntitySet Name="author" EntityType="Self.author" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="book" EntityType="Self.book" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="book_author" EntityType="Self.book_author" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="borrow" EntityType="Self.borrow" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="member" EntityType="Self.member" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="fk_bookauthor_author" Association="Self.fk_bookauthor_author">
+      <End Role="author" EntitySet="author" />
+      <End Role="book_author" EntitySet="book_author" />
+    </AssociationSet>
+    <AssociationSet Name="fk_bookauthor_book" Association="Self.fk_bookauthor_book">
+      <End Role="book" EntitySet="book" />
+      <End Role="book_author" EntitySet="book_author" />
+    </AssociationSet>
+    <AssociationSet Name="fk_borrow_book" Association="Self.fk_borrow_book">
+      <End Role="book" EntitySet="book" />
+      <End Role="borrow" EntitySet="borrow" />
+    </AssociationSet>
+    <AssociationSet Name="fk_borrow_member" Association="Self.fk_borrow_member">
+      <End Role="member" EntitySet="member" />
+      <End Role="borrow" EntitySet="borrow" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
